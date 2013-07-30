@@ -7,6 +7,27 @@
  * License: GNU GPL v2 (see License.txt), GNU GPL v3 or proprietary (CommercialLicense.txt)
  */
 
+/* Pinbelegung Atmega in PDIP
+ * PIN 02 - PD0 = LED        A
+ * PIN 03 - PD1 = RESTORE    E
+ * PIN 23 - PC0 = Bit 0 Matrix A
+ * PIN 24 - PC1 = Bit 1 Matrix A
+ * PIN 25 - PC2 = Bit 2 Matrix A
+ * PIN 26 - PC3 = Bit 3 Matrix A
+ * PIN 06 - PD4 = Bit 4 Matrix A
+ * PIN 11 - PD5 = Bit 5 Matrix A
+ * PIN 12 - PD6 = Bit 6 Matrix A
+ * PIN 13 - PC7 = Bit 7 Matrix A
+ * PIN 14 - PB0 = Bit 0 Matrix E
+ * PIN 15 - PB1 = Bit 1 Matrix E
+ * PIN 16 - PB2 = Bit 2 Matrix E
+ * PIN 17 - PB3 = Bit 3 Matrix E
+ * PIN 18 - PB4 = Bit 4 Matrix E
+ * PIN 19 - PB5 = Bit 5 Matrix E
+ * PIN 12 - PC4 = Bit 6 Matrix E
+ * PIN 13 - PC5 = Bit 7 Matrix E
+*/
+
 #include <avr/io.h>
 #include <avr/wdt.h>
 #include <avr/interrupt.h>  /* for sei() */
@@ -15,7 +36,6 @@
 
 #include <avr/pgmspace.h>   /* required by usbdrv.h */
 #include "usbdrv.h"
-#include "oddebug.h"        /* This is also an example for using debug macros */
 
 /* ------------------------------------------------------------------------- */
 /* ----------------------------- USB interface ----------------------------- */
@@ -44,9 +64,7 @@ static uchar    bytesRemaining;
 
 /* ------------------------------------------------------------------------- */
 
-/* usbFunctionRead() is called when the host requests a chunk of data from
- * the device. For more information see the documentation in usbdrv/usbdrv.h.
- */
+/* usbFunctionRead() wird aufgerufen wenn der Host Daten Empfangen möchte */
 uchar   usbFunctionRead(uchar *data, uchar len)
 {
     if(len > bytesRemaining)
@@ -57,9 +75,7 @@ uchar   usbFunctionRead(uchar *data, uchar len)
     return len;
 }
 
-/* usbFunctionWrite() is called when the host sends a chunk of data to the
- * device. For more information see the documentation in usbdrv/usbdrv.h.
- */
+/* usbFunctionWrite() wird aufgerufen wenn der Host Daten Senden möchte */
 uchar   usbFunctionWrite(uchar *data, uchar len)
 {
     if(bytesRemaining == 0)
@@ -100,11 +116,10 @@ usbRequest_t    *rq = (void *)data;
 
 int main(void)
 {
+
 uchar   i;
 
     wdt_enable(WDTO_1S);
-    odDebugInit();
-    DBG1(0x00, 0, 0);       /* debug output: main starts */
     usbInit();
     usbDeviceDisconnect();  /* enforce re-enumeration, do this while interrupts are disabled! */
     i = 0;
@@ -114,9 +129,7 @@ uchar   i;
     }
     usbDeviceConnect();
     sei();
-    DBG1(0x01, 0, 0);       /* debug output: main loop starts */
     for(;;){                /* main event loop */
-        DBG1(0x02, 0, 0);   /* debug output: main loop iterates */
         wdt_reset();
         usbPoll();
     }
