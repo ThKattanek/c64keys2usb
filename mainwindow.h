@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "c64keys2usb.h"
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +18,7 @@ public:
     
 private:
     Ui::MainWindow *ui;
+    C64Keys2USB *c64keys;
 };
 
 #endif // MAINWINDOW_H

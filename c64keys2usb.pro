@@ -12,10 +12,19 @@ TARGET = c64keys2usb
 TEMPLATE = app
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    hiddata.c \
+    c64keys2usb.cpp
 
-HEADERS  += mainwindow.h
-FORMS    += mainwindow.ui
+HEADERS  += mainwindow.h \
+    firmware/usbdrv/usbportability.h \
+    firmware/usbdrv/usbdrv.h \
+    firmware/usbdrv/usbconfig-prototype.h \
+    firmware/usbdrv/oddebug.h \
+FORMS    += mainwindow.ui \
+    hiddata.h \
+    hidsdi.h \
+    c64keys2usb.h
 
 linux-g++-64{
 DESTDIR = "bin/linux_x86_64"
@@ -35,4 +44,9 @@ LIBS += -lusb
 
 OTHER_FILES += \
     grafik/c64keys2usb.ico \
-    c64keys2usb.rc
+    c64keys2usb.rc \
+    firmware/Makefile \
+    firmware/main.c \
+    firmware/usbconfig.h \
+    doc/Anleitung.pdf \
+    doc/Anleitung.odt
