@@ -21,6 +21,7 @@ public:
     bool Open();
     void Update();
     uint8_t GetKeysRow(uint8_t col);
+    uint8_t GetKeysCol(unit8_t row);
     bool GetRestoreStatus();
 
 private:

@@ -90,6 +90,11 @@ uint8_t C64Keys2USB::GetKeysRow(uint8_t col)
     return KeyBuffer[col+1];
 }
 
+uint8_t C64Keys2USB::GetKeysCol(unit8_t row)
+{
+
+}
+
 bool C64Keys2USB::GetRestoreStatus()
 {
     if(KeyBuffer[8+1]==0x01) return true;
