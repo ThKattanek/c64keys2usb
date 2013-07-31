@@ -58,7 +58,7 @@ bool C64Keys2USB::readKeys()
     }
 }
 
-void C64Keys2USB::Open()
+bool C64Keys2USB::Open()
 {
     dev = openDevice();
     if(dev == NULL)
@@ -69,6 +69,8 @@ void C64Keys2USB::Open()
     {
         isUSBOpen = true;
     }
+
+    return isUSBOpen;
 }
 
 void C64Keys2USB::Update()

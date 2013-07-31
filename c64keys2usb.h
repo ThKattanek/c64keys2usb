@@ -18,7 +18,7 @@ class C64Keys2USB
 public:
     C64Keys2USB();
     ~C64Keys2USB();
-    void Open();
+    bool Open();
     void Update();
     uint8_t GetKeysRow(uint8_t col);
     bool GetRestoreStatus();
