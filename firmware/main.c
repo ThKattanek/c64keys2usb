@@ -10,22 +10,22 @@
 /* Pinbelegung Atmega in PDIP
  * PIN 02 - PD0 = LED        A
  * PIN 03 - PD1 = RESTORE    E
- * PIN 23 - PC0 = Bit 0 Matrix A
- * PIN 24 - PC1 = Bit 1 Matrix A
- * PIN 25 - PC2 = Bit 2 Matrix A
- * PIN 26 - PC3 = Bit 3 Matrix A
- * PIN 06 - PD4 = Bit 4 Matrix A
- * PIN 11 - PD5 = Bit 5 Matrix A
- * PIN 12 - PD6 = Bit 6 Matrix A
- * PIN 13 - PC7 = Bit 7 Matrix A
- * PIN 14 - PB0 = Bit 0 Matrix E
- * PIN 15 - PB1 = Bit 1 Matrix E
- * PIN 16 - PB2 = Bit 2 Matrix E
- * PIN 17 - PB3 = Bit 3 Matrix E
- * PIN 18 - PB4 = Bit 4 Matrix E
- * PIN 19 - PB5 = Bit 5 Matrix E
- * PIN 12 - PC4 = Bit 6 Matrix E
- * PIN 13 - PC5 = Bit 7 Matrix E
+ * PIN 23 - PC0 = Matrix Col 0 A
+ * PIN 24 - PC1 = Matrix Col 1 A
+ * PIN 25 - PC2 = Matrix Col 2 A
+ * PIN 26 - PC3 = Matrix Col 3 A
+ * PIN 06 - PD4 = Matrix Col 4 A
+ * PIN 11 - PD5 = Matrix Col 5 A
+ * PIN 12 - PD6 = Matrix Col 6 A
+ * PIN 13 - PC7 = Matrix Col 7 A
+ * PIN 14 - PB0 = Matrix Row 0 E
+ * PIN 15 - PB1 = Matrix Row 1 E
+ * PIN 16 - PB2 = Matrix Row 2 E
+ * PIN 17 - PB3 = Matrix Row 3 E
+ * PIN 18 - PB4 = Matrix Row 4 E
+ * PIN 19 - PB5 = Matrix Row 5 E
+ * PIN 12 - PC4 = Matrix Row 6 E
+ * PIN 13 - PC5 = Matrix Row 7 E
 */
 
 #include <avr/io.h>
