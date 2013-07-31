@@ -50,8 +50,8 @@ OTHER_FILES += \
     firmware/usbconfig.h \
     doc/Anleitung.pdf \
     doc/Anleitung.odt \
-    doc/Struktogramme der Firmware.pdf \
-    doc/Struktogramme der Firmware.odt \
-    doc/Firmware C64Keys2USB-02.nsd \
-    doc/Firmware C64Keys2USB-01.nsd \
+    "doc/Struktogramme der Firmware.pdf" \
+    "doc/Struktogramme der Firmware.odt" \
+    "doc/Firmware C64Keys2USB-02.nsd" \
+    "doc/Firmware C64Keys2USB-01.nsd" \
     doc/Schaltplan.pdf
