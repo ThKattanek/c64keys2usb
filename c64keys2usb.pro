@@ -13,18 +13,20 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    hiddata.c \
-    c64keys2usb.cpp
+    c64keys2usb.cpp \
+    hiddata.c
 
 HEADERS  += mainwindow.h \
     firmware/usbdrv/usbportability.h \
     firmware/usbdrv/usbdrv.h \
     firmware/usbdrv/usbconfig-prototype.h \
     firmware/usbdrv/oddebug.h \
-FORMS    += mainwindow.ui \
     hiddata.h \
     hidsdi.h \
     c64keys2usb.h
+
+FORMS    += mainwindow.ui \
+
 
 linux-g++-64{
 DESTDIR = "bin/linux_x86_64"

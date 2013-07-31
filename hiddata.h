@@ -34,6 +34,11 @@ typedef struct usbDevice    usbDevice_t;
 
 /* ------------------------------------------------------------------------ */
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 int usbhidOpenDevice(usbDevice_t **device, int vendorID, char *vendorName, int productID, char *productName, int usesReportIDs);
 /* This function opens a USB device. 'vendorID' and 'productID' are the numeric
  * Vendor-ID and Product-ID of the device we want to open. If 'vendorName' and
@@ -64,6 +69,10 @@ int usbhidGetReport(usbDevice_t *device, int reportID, char *buffer, int *len);
  * report is returned in '*len'.
  * Returns: 0 on success, an error code otherwise.
  */
+
+#ifdef __cplusplus
+}
+#endif
 
 /* ------------------------------------------------------------------------ */
 

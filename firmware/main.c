@@ -1,7 +1,7 @@
 /* Name: main.c
  * Project: c64keys2usb
  * Author: Thorsten Kattanek
- * Creation Date: 2013-07-30
+ * Creation Date: 2013-07-31
  * Tabsize: 4
  * Copyright: (c) 2013 by ALFSOFT
  * License: GNU GPL v2 (see License.txt), GNU GPL v3 or proprietary (CommercialLicense.txt)
@@ -37,6 +37,8 @@
 #include <avr/pgmspace.h>   /* required by usbdrv.h */
 #include "usbdrv.h"
 
+uint8_t key_buffer[10];
+
 /* ------------------------------------------------------------------------- */
 /* ----------------------------- USB interface ----------------------------- */
 /* ------------------------------------------------------------------------- */
@@ -48,7 +50,7 @@ PROGMEM const char usbHidReportDescriptor[22] = {    /* USB report descriptor */
     0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
     0x26, 0xff, 0x00,              //   LOGICAL_MAXIMUM (255)
     0x75, 0x08,                    //   REPORT_SIZE (8)
-    0x95, 0x80,                    //   REPORT_COUNT (128)
+    0x95, 0x0A,                    //   REPORT_COUNT (10)
     0x09, 0x00,                    //   USAGE (Undefined)
     0xb2, 0x02, 0x01,              //   FEATURE (Data,Var,Abs,Buf)
     0xc0                           // END_COLLECTION
@@ -65,27 +67,38 @@ static uchar    bytesRemaining;
 /* ------------------------------------------------------------------------- */
 
 /* usbFunctionRead() wird aufgerufen wenn der Host Daten Empfangen möchte */
-uchar   usbFunctionRead(uchar *data, uchar len)
+uchar usbFunctionRead(uchar *data, uchar len)
 {
+    uint8_t i;
+
     if(len > bytesRemaining)
         len = bytesRemaining;
-    eeprom_read_block(data, (uchar *)0 + currentAddress, len);
+    //eeprom_read_block(data, (uchar *)0 + currentAddress, len);
+
+    for(i=0;i<len;i++)
+    {
+        data[i] = key_buffer[i+currentAddress];
+    }
     currentAddress += len;
     bytesRemaining -= len;
     return len;
 }
 
+/* ------------------------------------------------------------------------- */
+
 /* usbFunctionWrite() wird aufgerufen wenn der Host Daten Senden möchte */
 uchar   usbFunctionWrite(uchar *data, uchar len)
 {
+    /*
     if(bytesRemaining == 0)
-        return 1;               /* end of transfer */
+        return 1;               // end of transfer
     if(len > bytesRemaining)
         len = bytesRemaining;
     eeprom_write_block(data, (uchar *)0 + currentAddress, len);
     currentAddress += len;
     bytesRemaining -= len;
-    return bytesRemaining == 0; /* return 1 if this was the last chunk */
+    return bytesRemaining == 0; / return 1 if this was the last chunk
+    */
 }
 
 /* ------------------------------------------------------------------------- */
@@ -97,12 +110,12 @@ usbRequest_t    *rq = (void *)data;
     if((rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_CLASS){    /* HID class request */
         if(rq->bRequest == USBRQ_HID_GET_REPORT){  /* wValue: ReportType (highbyte), ReportID (lowbyte) */
             /* since we have only one report type, we can ignore the report-ID */
-            bytesRemaining = 128;
+            bytesRemaining = 10;
             currentAddress = 0;
             return USB_NO_MSG;  /* use usbFunctionRead() to obtain data */
         }else if(rq->bRequest == USBRQ_HID_SET_REPORT){
             /* since we have only one report type, we can ignore the report-ID */
-            bytesRemaining = 128;
+            bytesRemaining = 10;
             currentAddress = 0;
             return USB_NO_MSG;  /* use usbFunctionWrite() to receive data from host */
         }
@@ -148,24 +161,27 @@ void LEDOff()
 void keyPoll(void)
 {
     uint8_t BitMask = 0x01;
+    uint8_t i = 0;
 
     setPORTA(0xFF);
-    //_delay_us(10);
+    _delay_us(1);
 
     if(getPORTB() != 0x00)
     {
         /// Mind. eine Taste der 8x8 Matrix ist gedrückt ///
-
         LEDOn();
+
         /// Prüfen auf RESTORE ///
         if((~PIND & 0x02) == 0x02)
         {
             PORTD |= 0x01;
             /// RESTORE ist gedrückt ///
+            key_buffer[8] = 0x01;
         }
         else
         {
-            /// Prüfen auf RESTORE ///
+            /// RESTORE ist nicht gedrückt ///
+            key_buffer[8] = 0x00;
         }
     }
     else
@@ -175,12 +191,22 @@ void keyPoll(void)
         {
             LEDOn();
             /// RESTORE ist gedrückt ///
+            key_buffer[8] = 0x01;
         }
         else
         {
             LEDOff();
             /// RESTORE ist nicht gedrückt ///
+            key_buffer[8] = 0x00;
         }
+    }
+
+    for(i=0;i<8;i++)
+    {
+        setPORTA(BitMask);
+        _delay_us(10);
+        key_buffer[i] = getPORTB();
+        BitMask <<= 1;
     }
 }
 
@@ -195,6 +221,9 @@ int main(void)
     PORTB = 0x3F;   // Interne Pullup Widerstände aktivieren für PIN 0 - 5
     PORTC = 0x30;   // Interne Pullup Widerstände aktivieren für PIN 4 und 5
     PORTD = 0x02;   // Interne Pullup Widerstände aktivieren für PIN 1
+
+    // ReserveByte auf 0x88 setzen
+    key_buffer[9] = 0x88;
 
     uchar   i;
     wdt_enable(WDTO_1S);
