@@ -86,13 +86,21 @@ void C64Keys2USB::Update()
 
 uint8_t C64Keys2USB::GetKeysRow(uint8_t col)
 {
-    if(col > 8) return 0x00;
+    if(col > 7) return 0x00;
     return KeyBuffer[col+1];
 }
 
-uint8_t C64Keys2USB::GetKeysCol(unit8_t row)
+uint8_t C64Keys2USB::GetKeysCol(uint8_t row)
 {
+    if(row > 7) return 0x00;
 
+    uint8_t ret = 0x00;
+
+    for(uint8_t i=0;i<8;i++)
+    {
+        ret |= ((KeyBuffer[i+1]>>row)&0x01)<<i;
+    }
+    return ret;
 }
 
 bool C64Keys2USB::GetRestoreStatus()
