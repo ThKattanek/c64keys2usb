@@ -226,6 +226,16 @@ int main(void)
     key_buffer[9] = 0x88;
 
     uchar   i;
+
+    // Startmeldung mittels Blinken 5x
+    for(i=0;i<5;i++)
+    {
+        LEDOn();
+        _delay_ms(40);
+        LEDOff();
+        _delay_ms(80);
+    }
+
     wdt_enable(WDTO_1S);
     usbInit();
     usbDeviceDisconnect();  // enforce re-enumeration, do this while interrupts are disabled!
@@ -234,6 +244,7 @@ int main(void)
         wdt_reset();
         _delay_ms(1);
     }
+
     usbDeviceConnect();
     sei();
 
