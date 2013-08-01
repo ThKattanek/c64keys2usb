@@ -156,7 +156,7 @@ void keyPoll(void)
     uint8_t i = 0;
 
     setPORTA(0xFF);
-    _delay_us(1);
+    _delay_us(10);
 
     if(getPORTB() != 0x00)
     {
@@ -166,7 +166,6 @@ void keyPoll(void)
         /// Prüfen auf RESTORE ///
         if((~PIND & 0x02) == 0x02)
         {
-            PORTD |= 0x01;
             /// RESTORE ist gedrückt ///
             key_buffer[8] = 0x01;
         }
@@ -230,6 +229,7 @@ int main(void)
         _delay_ms(80);
     }
 
+    // USB Initialisieren
     wdt_enable(WDTO_1S);
     usbInit();
     usbDeviceDisconnect();  // neues auflisten erzwingen, solange der Interrupt deaktiviert ist!
@@ -238,7 +238,6 @@ int main(void)
         wdt_reset();
         _delay_ms(1);
     }
-
     usbDeviceConnect();
     sei();
 

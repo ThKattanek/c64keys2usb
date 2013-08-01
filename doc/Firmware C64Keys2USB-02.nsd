@@ -1,36 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <root xmlns:nsd="http://structorizer.fisch.lu/" text="&#34;Firmware C64Keys2USB&#34;,&#34;Tastatur Poll&#34;" comment="" color="ffffff" type="program" style="nice">
 	<children>
-		<instruction text="&#34;BitMask = 1 ; LedTest=0&#34;" comment="" color="ffffff" rotated="0"></instruction>
-		<for text="&#34;for i = 0 to 7&#34;" comment="" color="ffffff">
-			<qFor>
-				<instruction text="&#34;Port Ausgang = BitMask&#34;" comment="" color="ffffff" rotated="0"></instruction>
-				<instruction text="&#34;Warten 10 ns&#34;" comment="" color="ffffff" rotated="0"></instruction>
-				<instruction text="&#34;Puffer[i] = PortEingang&#34;,&#34;BitMask &#60;&#60; 1&#34;" comment="" color="ffffff" rotated="0"></instruction>
-				<alternative text="&#34;wenn RestoreEingang = 1&#34;" comment="" color="ffffff">
-					<qTrue>
-						<instruction text="&#34;puffer[8] = 1&#34;,&#34;LedTest++;&#34;" comment="" color="ffffff" rotated="0"></instruction>
-					</qTrue>
-					<qFalse>
-						<instruction text="&#34;puffer[8]=0&#34;" comment="" color="ffffff" rotated="0"></instruction>
-					</qFalse>
-				</alternative>
-				<alternative text="&#34;wenn puffer[i] != 0&#34;" comment="" color="ffffff">
-					<qTrue>
-						<instruction text="&#34;LedTest++;&#34;" comment="" color="ffffff" rotated="0"></instruction>
-					</qTrue>
-					<qFalse>
-					</qFalse>
-				</alternative>
-			</qFor>
-		</for>
-		<alternative text="&#34;wenn LedTest &#62; 0&#34;" comment="&#34;&#34;" color="ffffff">
+		<instruction text="&#34;uint8 BitMask = 1 ; uint8 i;&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+		<instruction text="&#34;PortA(col) Ausgänge auf 0xFF setzen &#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+		<instruction text="&#34;10µs warten&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+		<alternative text="&#34;wenn PortB(row) &#60;&#62; 0&#34;" comment="&#34;&#34;" color="ffffff">
 			<qTrue>
-				<instruction text="&#34;LED Port PIN = 1&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+				<instruction text="&#34;LED an&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+				<alternative text="&#34;ist die Restore Taste gedrückt&#34;" comment="&#34;&#34;" color="ffffff">
+					<qTrue>
+						<instruction text="&#34;key_buffer[8]=1&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+					</qTrue>
+					<qFalse>
+						<instruction text="&#34;key_buffer[8]=0&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+					</qFalse>
+				</alternative>
 			</qTrue>
 			<qFalse>
-				<instruction text="&#34;LED Port PIN = 0&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+				<alternative text="&#34;ist die Restor Taste gedrückt&#34;" comment="&#34;&#34;" color="ffffff">
+					<qTrue>
+						<instruction text="&#34;LED an&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+						<instruction text="&#34;key_buffer[8]=1&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+					</qTrue>
+					<qFalse>
+						<instruction text="&#34;LED aus&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+						<instruction text="&#34;key_buffer[8]=0&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+					</qFalse>
+				</alternative>
 			</qFalse>
 		</alternative>
+		<for text="&#34;for i = 0 to 7&#34;" comment="" color="ffffff">
+			<qFor>
+				<instruction text="&#34;PortA(col) = BitMask&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+				<instruction text="&#34;10µs warten&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+				<instruction text="&#34;Key_buffer[i] = PortB(row)&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+				<instruction text="&#34;BitMask &#60;&#60; 1&#34;" comment="&#34;&#34;" color="ffffff" rotated="0"></instruction>
+			</qFor>
+		</for>
 	</children>
 </root>
