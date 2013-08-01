@@ -1,9 +1,9 @@
 /* Name: main.c
- * Project: c64keys2usb
+ * Projekt: c64keys2usb
  * Author: Thorsten Kattanek
- * Creation Date: 2013-07-31
- * Tabsize: 4
- * Copyright: (c) 2013 by ALFSOFT
+ * Erstellt am: 30.07.2013
+ * Copyright: Thorsten Kattanek
+ * Vesrion: 0.1
  * License: GNU GPL v2 (see License.txt), GNU GPL v3 or proprietary (CommercialLicense.txt)
  */
 
@@ -30,37 +30,38 @@
 
 #include <avr/io.h>
 #include <avr/wdt.h>
-#include <avr/interrupt.h>  /* for sei() */
-#include <util/delay.h>     /* for _delay_ms() */
-#include <avr/eeprom.h>
-
-#include <avr/pgmspace.h>   /* required by usbdrv.h */
+#include <avr/interrupt.h>
+#include <util/delay.h>
+#include <avr/pgmspace.h>   /* benötigt von usbdrv.h */
 #include "usbdrv.h"
 
-uint8_t key_buffer[10];
+uint8_t key_buffer[16];
 
 /* ------------------------------------------------------------------------- */
-/* ----------------------------- USB interface ----------------------------- */
+/* ----------------------------- USB Interface ----------------------------- */
 /* ------------------------------------------------------------------------- */
 
-PROGMEM const char usbHidReportDescriptor[22] = {    /* USB report descriptor */
-    0x06, 0x00, 0xff,              // USAGE_PAGE (Generic Desktop)
-    0x09, 0x01,                    // USAGE (Vendor Usage 1)
-    0xa1, 0x01,                    // COLLECTION (Application)
+PROGMEM const char usbHidReportDescriptor[22] = {    /// USB Report descriptor
+    0x06, 0x00, 0xff,              //   USAGE_PAGE (Generic Desktop)
+    0x09, 0x01,                    //   USAGE (Vendor Usage 1)
+    0xa1, 0x01,                    //   COLLECTION (Application)
     0x15, 0x00,                    //   LOGICAL_MINIMUM (0)
     0x26, 0xff, 0x00,              //   LOGICAL_MAXIMUM (255)
     0x75, 0x08,                    //   REPORT_SIZE (8)
-    0x95, 0x0A,                    //   REPORT_COUNT (10)
+    0x95, 0x10,                    //   REPORT_COUNT (16)
     0x09, 0x00,                    //   USAGE (Undefined)
     0xb2, 0x02, 0x01,              //   FEATURE (Data,Var,Abs,Buf)
-    0xc0                           // END_COLLECTION
+    0xc0                           //   END_COLLECTION
 };
-/* Since we define only one feature report, we don't use report-IDs (which
- * would be the first byte of the report). The entire report consists of 128
- * opaque data bytes.
- */
+/* Da wir nur ein Feature Report definieren, verwenden wir keine Report-ID's
+ * Dies würde das erste Byte des Berichts sein, der Gesamte Bereich besteht aus
+ * 16 Festdefinierten Daten Bytes
 
-/* The following variables store the status of the current data transfer */
+ 0x00 - 0x07    = PortB Eingangswerte bei jew. gesetztem PortA Ausgangswert (C64 Key Matrix)
+ 0x08           = RESTORE Status (0 = nicht gedrückt; 1 = gedrückt)
+ 0x09 - 0x0F    = nicht benutzt (reserviert f. nächste Versione) */
+
+/* Diese Variablen steuern die aktuelle Datenübertragung  */
 static uchar    currentAddress;
 static uchar    bytesRemaining;
 
@@ -73,7 +74,6 @@ uchar usbFunctionRead(uchar *data, uchar len)
 
     if(len > bytesRemaining)
         len = bytesRemaining;
-    //eeprom_read_block(data, (uchar *)0 + currentAddress, len);
 
     for(i=0;i<len;i++)
     {
@@ -89,16 +89,8 @@ uchar usbFunctionRead(uchar *data, uchar len)
 /* usbFunctionWrite() wird aufgerufen wenn der Host Daten Senden möchte */
 uchar   usbFunctionWrite(uchar *data, uchar len)
 {
-    /*
-    if(bytesRemaining == 0)
-        return 1;               // end of transfer
-    if(len > bytesRemaining)
-        len = bytesRemaining;
-    eeprom_write_block(data, (uchar *)0 + currentAddress, len);
-    currentAddress += len;
-    bytesRemaining -= len;
-    return bytesRemaining == 0; / return 1 if this was the last chunk
-    */
+    return 1;
+    /// In dieser Version muss der Host keine Daten senden
 }
 
 /* ------------------------------------------------------------------------- */
@@ -110,12 +102,12 @@ usbRequest_t    *rq = (void *)data;
     if((rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_CLASS){    /* HID class request */
         if(rq->bRequest == USBRQ_HID_GET_REPORT){  /* wValue: ReportType (highbyte), ReportID (lowbyte) */
             /* since we have only one report type, we can ignore the report-ID */
-            bytesRemaining = 10;
+            bytesRemaining = 16;
             currentAddress = 0;
             return USB_NO_MSG;  /* use usbFunctionRead() to obtain data */
         }else if(rq->bRequest == USBRQ_HID_SET_REPORT){
             /* since we have only one report type, we can ignore the report-ID */
-            bytesRemaining = 10;
+            bytesRemaining = 16;
             currentAddress = 0;
             return USB_NO_MSG;  /* use usbFunctionWrite() to receive data from host */
         }
@@ -222,10 +214,12 @@ int main(void)
     PORTC = 0x30;   // Interne Pullup Widerstände aktivieren für PIN 4 und 5
     PORTD = 0x02;   // Interne Pullup Widerstände aktivieren für PIN 1
 
-    // ReserveByte auf 0x88 setzen
-    key_buffer[9] = 0x88;
-
     uchar   i;
+    // key_buffer löschen
+    for(i=0;i<16;i++)
+    {
+        key_buffer[i] = 0x00;
+    }
 
     // Startmeldung mittels Blinken 5x
     for(i=0;i<5;i++)
@@ -238,9 +232,9 @@ int main(void)
 
     wdt_enable(WDTO_1S);
     usbInit();
-    usbDeviceDisconnect();  // enforce re-enumeration, do this while interrupts are disabled!
+    usbDeviceDisconnect();  // neues auflisten erzwingen, solange der Interrupt deaktiviert ist!
     i = 0;
-    while(--i){             // fake USB disconnect for > 250 ms
+    while(--i){             // Fake USB Disconnect für > 250 ms
         wdt_reset();
         _delay_ms(1);
     }
@@ -248,7 +242,7 @@ int main(void)
     usbDeviceConnect();
     sei();
 
-    for(;;){                /* main event loop */
+    for(;;){                // Endlosschleife
         wdt_reset();
         usbPoll();
         keyPoll();
