@@ -7,7 +7,7 @@
 # License: GNU GPL v2 (see License.txt), GNU GPL v3 or proprietary (CommercialLicense.txt)
 
 DEVICE  = atmega8
-F_CPU   = 20000000	# in Hz
+F_CPU   = 12000000	# in Hz
 FUSE_L  = 0x9f
 FUSE_H  = 0xc9
 AVRDUDE = avrdude -P usb -c avrispmkII -p $(DEVICE) # edit this line for your programmer
@@ -19,7 +19,7 @@ COMPILE = avr-gcc -Wall -Os -DF_CPU=$(F_CPU) $(CFLAGS) -mmcu=$(DEVICE)
 
 ##############################################################################
 # Fuse values for particular devices
-##############################################################################
+#################################### ##########################################
 # If your device is not listed here, go to
 # http://palmavr.sourceforge.net/cgi-bin/fc.cgi
 # and choose options for external crystal clock and no clock divider

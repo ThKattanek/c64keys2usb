@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>175</width>
-    <height>214</height>
+    <width>291</width>
+    <height>210</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>C64Key2USB Test</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="label">
@@ -163,7 +163,7 @@
      <rect>
       <x>8</x>
       <y>132</y>
-      <width>141</width>
+      <width>117</width>
       <height>16</height>
      </rect>
     </property>
@@ -176,13 +176,23 @@
      <string>TextLabel</string>
     </property>
    </widget>
+   <widget class="QTableWidget" name="tableWidget">
+    <property name="geometry">
+     <rect>
+      <x>128</x>
+      <y>4</y>
+      <width>157</width>
+      <height>145</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>175</width>
+     <width>291</width>
      <height>22</height>
     </rect>
    </property>
