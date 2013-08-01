@@ -16,14 +16,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     c64keys2usb.cpp \
-    hiddata.c
+    hiddata.c \
+    widget_8bit_led_leiste.cpp
 
 HEADERS  += mainwindow.h \
     hiddata.h \
     hidsdi.h \
-    c64keys2usb.h
+    c64keys2usb.h \
+    widget_8bit_ledleiste.h
 
 FORMS    += mainwindow.ui \
+    widget_8bit_led_leiste.ui
 
 
 linux-g++-64{
@@ -55,3 +58,6 @@ OTHER_FILES += \
     "doc/Firmware C64Keys2USB-02.nsd" \
     "doc/Firmware C64Keys2USB-01.nsd" \
     doc/Schaltplan.pdf
+
+RESOURCES += \
+    widget_8bit_led_leiste.qrc

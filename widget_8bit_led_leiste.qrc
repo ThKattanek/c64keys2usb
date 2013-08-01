@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>grafik/amber-off-64.png</file>
+        <file>grafik/amber-on-64.png</file>
+        <file>grafik/blue-off-64.png</file>
+        <file>grafik/blue-on-64.png</file>
+        <file>grafik/green-off-64.png</file>
+        <file>grafik/green-on-64.png</file>
+        <file>grafik/red-off-64.png</file>
+        <file>grafik/red-on-64.png</file>
+    </qresource>
+</RCC>
