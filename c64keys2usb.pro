@@ -42,7 +42,13 @@ LIBS += -lusb
 win32-g++-cross{
 RC_FILE = c64keys2usb.rc
 DESTDIR = "bin/win_x32"
-LIBS += -lusb
+LIBS += -lusb -lhid -lsetupapi
+}
+
+win32{
+RC_FILE = c64keys2usb.rc
+DESTDIR = "bin/win_x32"
+LIBS += -lusb -lhid -lsetupapi
 }
 
 OTHER_FILES += \
